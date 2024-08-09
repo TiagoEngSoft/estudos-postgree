@@ -88,6 +88,11 @@ select nome from cliente order by nome asc;
 
 select nome from cliente order by nome desc;
 
+
+
+
+
+
 -- 1.	O nome, o gênero e a profissão de todos os clientes, ordenado pelo nome em ordem decrescente
 select nome, genero, profissao from cliente order by nome desc;
 
@@ -510,6 +515,11 @@ Insert into pedido_produto (idpedido,idproduto,quantidade,valor_unitario) values
 Insert into pedido_produto (idpedido,idproduto,quantidade,valor_unitario) values (14,6,3,100);
 Insert into pedido_produto (idpedido,idproduto,quantidade,valor_unitario) values (15,3,1,200);
 
+
+
+
+
+
 -- 1. Somente o nome de todos os vendedores em ordem alfabética.
 select nome from vendedor order by nome asc
 
@@ -585,6 +595,21 @@ select * from pedido_produto where idpedido = 1
 
 --23. Os itens do pedido 06 ou do pedido 10.
 select * from pedido_produto where idpedido = 6 or idpedido = 10
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 -- Funções agregadas
 
@@ -736,6 +761,18 @@ select idpedido, sum(quantidade) from pedido_produto group by idpedido
 
 -- 40. O somatório da quantidade de todos os produtos do pedido.
 select sum(valor_unitario) from pedido_produto
+
+
+
+
+
+
+
+
+
+
+
+
 
 -- Relacionamentos com joins
 select 
@@ -1045,6 +1082,15 @@ select
 from
 	produto
 	
+
+
+
+
+
+
+
+
+
 -- Subconsultas
 
 -- Selecionar a data do pedido e o valor onde o valor seja maior que a média dos 
@@ -1070,6 +1116,7 @@ select * from pedido_produto
 -- Exemplo com update
 select * from pedido
 
+-- Aumento de 5% nos produtos com valor acima da média de todos os produtos
 update pedido set valor = valor + ((valor * 5) / 100) 
 where valor > (select avg(valor) from pedido)
 
@@ -1174,6 +1221,14 @@ left outer join
 	cliente cln on pdd.idcliente = cln.idcliente
 group by
 	cln.nome
+
+
+
+
+
+
+
+
 	
 -- Views
 drop view cliente_profissao;
@@ -1304,6 +1359,13 @@ left outer join
 	produto prd on pdp.idproduto = prd.idproduto
 	
 select * from produto_pedido
+
+
+
+
+
+
+
 
 -- Campos autoincremento
 create table exemplo (
