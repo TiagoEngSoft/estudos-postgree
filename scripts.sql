@@ -605,13 +605,7 @@ select * from pedido_produto where idpedido = 6 or idpedido = 10
 
 
 
-
-
-
-
-
-
--- Funções agregadas
+-- Funções agregadas  ******************************************************************************
 
 select avg(valor) from pedido
 
@@ -770,11 +764,7 @@ select sum(valor_unitario) from pedido_produto
 
 
 
-
-
-
-
--- Relacionamentos com joins
+-- Relacionamentos com joins ********************************************************************************
 select 
 	cln.nome as cliente, 
 	prf.nome as profissao
@@ -1091,7 +1081,7 @@ from
 
 
 
--- Subconsultas
+-- Subconsultas ********************************************************************************
 
 -- Selecionar a data do pedido e o valor onde o valor seja maior que a média dos 
 -- valores de todos os pedidos
@@ -1190,7 +1180,8 @@ update
 set 
 	valor = valor + ((valor * 5) / 100)
 where 
-	(select sum(pdp.valor_unitario) from pedido_produto pdp where pdp.idpedido = pedido.idpedido) > (select avg(valor_unitario) from pedido_produto)
+	(select sum(pdp.valor_unitario) from pedido_produto pdp where pdp.idpedido = pedido.idpedido) >
+	(select avg(valor_unitario) from pedido_produto)
 
 
 select
@@ -1211,7 +1202,8 @@ select
 from
 	cliente cln
 
--- 8. Para revisar, refaça o exercício anterior (número 07) utilizando group by e mostrando somente os clientes que fizeram pelo menos um pedido.
+-- 8. Para revisar, refaça o exercício anterior (número 07) utilizando group by
+-- e mostrando somente os clientes que fizeram pelo menos um pedido.
 select
 	cln.nome as cliente,
 	count(pdd.idpedido) as total
@@ -1229,8 +1221,11 @@ group by
 
 
 
+
 	
--- Views
+-- Views ********************************************************************************
+
+--Quando for mudar o select da view, será melhor apagala e faze-la novamente
 drop view cliente_profissao;
 
 create  view cliente_profissao as
@@ -1246,8 +1241,12 @@ left outer join
 select cliente from cliente_profissao where profissao = 'Professor'
 select * from cliente_profissao
 
--- 1. O nome, a profissão, a nacionalidade, o complemento, o município, a unidade de federação, o bairro, o CPF,o RG, a data de nascimento, o gênero (mostrar “Masculino” ou “Feminino”), o logradouro, o número e as observações dos clientes.
+-- 1. O nome, a profissão, a nacionalidade, o complemento, o município,
+-- a unidade de federação, o bairro, o CPF,o RG, a data de nascimento, o 
+-- gênero (mostrar “Masculino” ou “Feminino”), o logradouro, o número e as observações dos clientes.
+
 drop view cliente_dados
+
 create view cliente_dados as 
 select 
 	cln.nome as cliente,
@@ -1310,7 +1309,8 @@ left outer join
 	
 select * from produto_fornecedor
 
--- 4. O nome da transportadora, o logradouro, o número, o nome da unidade de federação e a sigla da unidade de federação das transportadoras. 
+-- 4. O nome da transportadora, o logradouro, o número, o nome da unidade de
+-- federação e a sigla da unidade de federação das transportadoras. 
 create view transportadora_uf as
 select
 	trn.nome as transportadora,
@@ -1328,7 +1328,8 @@ left outer join
 select * from transportadora_uf where sigla = 'PR'
 
 
--- 5. A data do pedido, o valor, o nome da transportadora, o nome do cliente e o nome do vendedor dos pedidos.
+-- 5. A data do pedido, o valor, o nome da transportadora, o nome do cliente e
+-- o nome do vendedor dos pedidos.
 create view dados_pedido as
 select
 	pdd.data_pedido,
@@ -1367,7 +1368,9 @@ select * from produto_pedido
 
 
 
--- Campos autoincremento
+
+
+-- Campos autoincremento  ****************************************************************************
 create table exemplo (
 	idexemplo serial not null,
 	nome varchar(50) not null,
@@ -1384,10 +1387,13 @@ insert into exemplo (nome) values ('Exemplo 5');
 select * from exemplo
 
 -- Bairro
+
+-- Criando a sequencia para auto incremento, e vinculando ao campo de uma tabela 
 select max(idbairro) + 1 from bairro
-create sequence bairro_id_seq minvalue 5
+create sequence bairro_id_seq minvalue 5 
 alter table bairro alter idbairro set default nextval('bairro_id_seq')
 alter sequence bairro_id_seq owned by bairro.idbairro
+
 insert into bairro (nome) values ('Teste 1');
 insert into bairro (nome) values ('Teste 2');
 select * from bairro
@@ -1397,6 +1403,7 @@ select max(idcliente) + 1 from cliente
 create sequence cliente_id_seq minvalue 18
 alter table cliente alter idcliente set default nextval('cliente_id_seq')
 alter sequence cliente_id_seq owned by cliente.idcliente
+
 insert into cliente (nome) values ('Teste sequência')
 select * from cliente
 
@@ -1405,7 +1412,6 @@ select max(idcomplemento) + 1 from complemento
 create sequence complemento_id_seq minvalue 3
 alter table complemento alter idcomplemento set default nextval('complemento_id_seq')
 alter sequence complemento_id_seq owned by complemento.idcomplemento
-insert into complemento (nome) values ('Teste sequência')
 select * from complemento
 
 -- Fornecedor
@@ -1507,16 +1513,35 @@ insert into produto (nome, idfornecedor) values ('Teste default 1', 1)
 insert into produto (nome, idfornecedor, valor) values ('Teste default 1', 1, 50)
 select * from produto
 
--- Índices
+
+
+
+
+
+
+
+
+
+-- Índices  **********************************************************************************
 create index idx_cln_nome on cliente (nome);
 
 -- 1. Adicione índices nas seguintes tabelas e campos
 	-- a. Pedido – data do pedido
 	-- b. Produto – nome
-drop index idx_pdd_data_pedido
+drop index idx_pdd_data_pedido -- Se quiser excluir o índice
 create index idx_pdd_data_pedido on pedido (data_pedido)
 create index idx_pdr_nome on produto (nome)
 
+
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- Funções
 create or replace function formata_moeda(valor float) returns varchar(20) language plpgsql as
 $$
