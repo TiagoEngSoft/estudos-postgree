@@ -12,6 +12,15 @@ insert into editora (nome) values ('Nova Terra');
 insert into editora (nome) values ('Brasport');
 select * from editora
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 create table categoria (
 	idcategoria serial not null,
 	nome varchar(50) not null,
@@ -26,6 +35,15 @@ insert into categoria (nome) values ('Java');
 insert into categoria (nome) values ('PHP');
 select * from categoria
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 create table autor (
 	idautor serial not null,
 	nome varchar(50) not null,
@@ -46,6 +64,15 @@ insert into autor (nome) values ('Fabrício Xavier');
 insert into autor (nome) values ('Pablo Dalloglio');
 select * from autor
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 create table livro (
 	idlivro serial not null,
 	ideditora integer not null,
@@ -55,7 +82,7 @@ create table livro (
 	constraint pk_lvr_idlivro primary key (idlivro),
 	constraint fk_lvr_ideditora foreign key (ideditora) references editora (ideditora),
 	constraint fk_lvr_idcategoria foreign key (idcategoria) references categoria (idcategoria),
-	constraint un_lvr_nome unique (nome)
+	constraint un_lvr_nome unique (nome) -- Não permitir livros duplicados
 );
 
 alter table livro alter column nome type varchar(70);
@@ -73,6 +100,15 @@ insert into livro (ideditora, idcategoria, nome) values (1, 4, 'PHP para Desenvo
 insert into livro (ideditora, idcategoria, nome) values (2, 4, 'PHP com Programação Orientada a Objetos');
 select * from livro
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 create table livro_autor (
 	idlivro integer not null,
 	idautor integer not null,
@@ -96,6 +132,15 @@ insert into livro_autor (idlivro, idautor) values (12, 9);
 insert into livro_autor (idlivro, idautor) values (13, 10);
 select * from livro_autor
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 create table aluno (
 	idaluno serial not null,
 	nome varchar(50) not null,
@@ -111,8 +156,16 @@ insert into aluno (nome) values ('Pedro');
 insert into aluno (nome) values ('Maria');
 select * from aluno
 
--- drop table emprestimo
 
+
+
+
+
+
+
+
+--  ********************************************************************************
+-- drop table emprestimo
 create table emprestimo (
 	idemprestimo serial not null,
 	idaluno integer not null,
@@ -135,6 +188,15 @@ insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvi
 insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido) values (4, '2012-05-08', '2012-05-18', 5, 'S');
 select * from emprestimo
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 create table emprestimo_livro (
 	idemprestimo integer not null,
 	idlivro integer not null,
@@ -163,6 +225,15 @@ select * from emprestimo_livro
 create index idx_emp_data_emprestimo on emprestimo (data_emprestimo);
 create index idx_emp_data_devolucao on emprestimo (data_devolucao);
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- CONSULTAS SIMPLES
 
 -- O nome dos autores em ordem alfabética.
@@ -211,6 +282,15 @@ select sum(valor) from emprestimo where data_emprestimo between '2012-05-05' and
 -- A quantidade de empréstimos que estão entre 01/05/2012 e 05/05/2012.
 select count(idemprestimo) from emprestimo where data_emprestimo between '2012-05-01' and '2012-05-05'
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- CONSULTAS COM JOIN
 
 -- O nome do livro, a categoria e a editora (LIVRO) – fazer uma view
@@ -273,6 +353,15 @@ from
 left outer join
 	livro lvr on elv.idlivro = lvr.idlivro
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- CONSULTAS COM AGRUPAMENTO + JOIN
 
 -- O nome da editora e a quantidade de livros de cada editora (LIVRO).
@@ -344,6 +433,15 @@ group by
 having
 	sum(emp.valor) > 12
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- CONSULTAS COMANDOS DIVERSOS
 
 -- O nome de todos os alunos em ordem decrescente e em letra maiúscula.
@@ -381,6 +479,15 @@ select
 from
 	emprestimo
 
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- SUBCONSULTAS
 
 -- A data do empréstimo e o valor dos empréstimos que o valor seja maior que 
