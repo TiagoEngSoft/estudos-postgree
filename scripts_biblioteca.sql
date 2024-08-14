@@ -179,12 +179,18 @@ create table emprestimo (
 );
 
 select * from aluno
-insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido) values (1, '2012-05-02', '2012-05-12', 10, 'S');
-insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido) values (1, '2012-04-23', '2012-05-03', 5, 'N');
-insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido) values (2, '2012-05-10', '2012-05-20', 12, 'N');
-insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido) values (3, '2012-05-10', '2012-05-20', 8, 'S');
-insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido) values (4, '2012-05-05', '2012-05-15', 15, 'N');
-insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido) values (4, '2012-05-07', '2012-05-17', 20, 'S');
+insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido)
+ values (1, '2012-05-02', '2012-05-12', 10, 'S');
+insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido)
+ values (1, '2012-04-23', '2012-05-03', 5, 'N');
+insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido)
+ values (2, '2012-05-10', '2012-05-20', 12, 'N');
+insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido)
+ values (3, '2012-05-10', '2012-05-20', 8, 'S');
+insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido)
+ values (4, '2012-05-05', '2012-05-15', 15, 'N');
+insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido)
+ values (4, '2012-05-07', '2012-05-17', 20, 'S');
 insert into emprestimo (idaluno, data_emprestimo, data_devolucao, valor, devolvido) values (4, '2012-05-08', '2012-05-18', 5, 'S');
 select * from emprestimo
 
@@ -259,8 +265,16 @@ select * from emprestimo where data_emprestimo not between '2012-05-05' and '201
 -- Os empréstimos que os livros já foram devolvidos.
 select * from emprestimo where devolvido = 'S'
 
--- CONSULTAS COM AGRUPAMENTO SIMPLES
 
+
+
+
+
+
+
+
+--  ********************************************************************************
+-- CONSULTAS COM AGRUPAMENTO SIMPLES
 -- A quantidade de livros.
 select count(idlivro) from livro
 
@@ -290,8 +304,9 @@ select count(idemprestimo) from emprestimo where data_emprestimo between '2012-0
 
 
 
---  ********************************************************************************
+-- ********************************************************************************
 -- CONSULTAS COM JOIN
+
 
 -- O nome do livro, a categoria e a editora (LIVRO) – fazer uma view
 create view dados_livros as
@@ -306,7 +321,8 @@ left outer join
 left outer join
 	editora edt on lvr.ideditora = edt.ideditora
 	
-select * from dados_livros
+select * from dados_livros -- Seleção feita pela view
+
 
 -- O nome do livro e o nome do autor (LIVRO_AUTOR) – fazer uma view.
 create view livro_autor_view as
@@ -322,6 +338,7 @@ left outer join
 
 select * from livro_autor_view
 
+
 -- O nome dos livros do autor Ian Graham (LIVRO_AUTOR).
 select * from autor
 select * from livro_autor where idautor = 8
@@ -335,6 +352,7 @@ left outer join
 where
 	ltr.idautor = 8
 
+
 -- O nome do aluno, a data do empréstimo e a data de devolução (EMPRESTIMO).
 select
 	aln.nome as aluno,
@@ -344,6 +362,7 @@ from
 	emprestimo emp
 left outer join
 	aluno aln on emp.idaluno = aln.idaluno
+
 
 -- O nome de todos os livros que foram emprestados (EMPRESTIMO_LIVRO).
 select
@@ -364,6 +383,8 @@ left outer join
 --  ********************************************************************************
 -- CONSULTAS COM AGRUPAMENTO + JOIN
 
+
+
 -- O nome da editora e a quantidade de livros de cada editora (LIVRO).
 select
 	edt.nome as editora,
@@ -374,6 +395,8 @@ left outer join
 	editora edt on lvr.ideditora = edt.ideditora
 group by
 	edt.nome
+
+
 
 -- O nome da categoria e a quantidade de livros de cada categoria (LIVRO).
 select
@@ -386,6 +409,8 @@ left outer join
 group by
 	ctg.nome
 
+
+
 -- O nome do autor e a quantidade de livros de cada autor (LIVRO_AUTOR).
 select
 	atr.nome as autor,
@@ -396,6 +421,8 @@ left outer join
 	autor atr on lva.idautor = atr.idautor
 group by
 	atr.nome
+
+
 
 -- O nome do aluno e a quantidade de empréstimo de cada aluno (EMPRESTIMO_LIVRO).
 select
@@ -408,6 +435,8 @@ left outer join
 group by
 	aln.nome
 
+
+
 -- O nome do aluno e o somatório do valor total dos empréstimos de cada aluno (EMPRESTIMO).
 select
 	aln.nome as aluno,
@@ -418,6 +447,8 @@ left outer join
 	aluno aln on emp.idaluno = aln.idaluno
 group by
 	aln.nome
+
+
 
 -- O nome do aluno e o somatório do valor total dos empréstimos de 
 -- cada aluno somente daqueles que o somatório for maior do que 7,00 (EMPRESTIMO).
@@ -451,7 +482,8 @@ select upper(nome) from aluno order by nome desc
 select * from emprestimo
 where extract(year from data_emprestimo) = 2012 and extract(month from data_emprestimo) = 4
 
--- Todos os campos do empréstimo. Caso já tenha sido devolvido, mostrar a mensagem “Devolução completa”, senão “Em atraso”.
+-- Todos os campos do empréstimo. Caso já tenha sido devolvido, mostrar a mensagem
+-- “Devolução completa”, senão “Em atraso”.
 select
 	*,
 	case devolvido
@@ -500,6 +532,8 @@ from
 where
 	valor > (select avg(valor) from emprestimo)
 
+
+
 -- A data do empréstimo e o valor dos empréstimos que possuem mais de um livro.
 select
 	emp.data_emprestimo,
@@ -515,6 +549,8 @@ where
 	  where elv.idemprestimo = emp.idemprestimo) > 1
 
 select * from emprestimo_livro
+
+
 
 -- A data do empréstimo e o valor dos empréstimos que o valor seja menor
 -- que a soma de todos os empréstimos.

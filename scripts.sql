@@ -1553,6 +1553,9 @@ $$;
 select valor, formata_moeda(valor) from pedido
 select valor, formata_moeda(valor) from produto
 
+
+
+
 create function get_nome_by_id(idc integer) returns varchar(50) language plpgsql as
 $$
 declare r varchar(50);
@@ -1564,9 +1567,11 @@ $$;
 
 select data_pedido, valor, idcliente, get_nome_by_id(idcliente) from pedido
 
+
+
 -- 1.	Crie uma função que receba como parâmetro o ID do pedido e retorne o 
 -- valor total deste pedido
-
+drop function get_valor_pedido;
 create or replace function get_valor_pedido(idpdd integer) returns varchar(20) language plpgsql as
 $$
 begin
@@ -1575,6 +1580,8 @@ end;
 $$;
 
 select get_valor_pedido(idpedido) from pedido
+
+
 
 -- 2.	Crie uma função chamada “maior”, que quando executada retorne o pedido 
 -- com o maior valor
@@ -1591,6 +1598,14 @@ $$;
 select get_maior_pedido() from pedido
 select get_maior_pedido()
 
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- Stored procedures
 create procedure insere_bairro(nome_bairro varchar(30)) language sql as
 $$
@@ -1599,6 +1614,8 @@ $$;
 
 call insere_bairro('Teste procedure')
 select * from bairro
+
+
 
 -- 1.	Crie uma stored procedure que receba como parâmetro o ID do produto e o 
 -- percentual de aumento, e reajuste o preço somente deste produto de acordo 
@@ -1611,6 +1628,8 @@ $$;
 select * from produto
 call reajusta_produto(1, 10)
 
+
+
 -- 2.	Crie uma stored procedure que receba como parâmetro o ID do produto e 
 -- exclua da base de dados somente o produto com o ID correspondente
 create or replace procedure apagar_produto(idp integer) language sql as
@@ -1621,6 +1640,14 @@ $$;
 select * from produto
 call apagar_produto(9)
 
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- Triggers
 
 create table bairro_auditoria (
@@ -1645,6 +1672,8 @@ call insere_bairro ('Teste 30');
 select * from bairro
 select * from bairro_auditoria
 
+
+
 -- 1.	Crie uma tabela chamada PEDIDOS_APAGADOS
 select * from pedido
 
@@ -1660,13 +1689,17 @@ create table pedidos_apagados (
 
 alter table pedidos_apagados alter column data_apagado type timestamp
 
+
+
 -- 2.	Faça uma trigger que quando um pedido for apagado, todos os seus 
 -- dados devem ser copiados para a tabela PEDIDOS_APAGADOS
 create or replace function pedido_log() returns trigger language plpgsql as
 $$
 begin
-	insert into pedidos_apagados (idpedido, idcliente, idtransportadora, idvendedor, data_pedido, valor, data_apagado)
-	values (old.idpedido, old.idcliente, old.idtransportadora, old.idvendedor, old.data_pedido, old.valor, current_timestamp);
+	insert into pedidos_apagados (idpedido, idcliente, idtransportadora, idvendedor,
+																data_pedido, valor, data_apagado)
+	values (old.idpedido, old.idcliente, old.idtransportadora, old.idvendedor,
+	        old.data_pedido, old.valor, current_timestamp);
 	return old;
 end;
 $$;
@@ -1681,6 +1714,14 @@ delete from pedido where idpedido = 17
 
 select * from pedidos_apagados
 
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- Domínios
 -- Tipo de dados: https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT
 
@@ -1781,12 +1822,24 @@ alter table uf alter column sigla type sigla;
 
 alter table vendedor alter column nome type nome_medio;
 
--- Recriar as views
+-- Recriar as views, pois para mudarmos os tipos de dados para os dominios
+-- presonalizados tivemos que apagar as views que utilizavam as tabelas
+
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- Usuários e permissões
 create role gerente;
 create role estagiario;
 
-grant select, insert, delete, update on bairro, cliente, complemento, fornecedor, municipio, nacionalidade, pedido, pedido_produto, produto, profissao, transportadora, uf, vendedor to gerente with grant option;
+grant select, insert, delete, update on bairro, cliente, complemento, fornecedor, municipio,
+ nacionalidade, pedido, pedido_produto, produto, profissao, transportadora, uf,
+  vendedor to gerente with grant option;
 grant all on all sequences in schema public to gerente;
 -- revoke
 
@@ -1809,6 +1862,14 @@ create role joao login password '123' in role atendente;
 
 -- 4.	Realize testes para verificar se as permissões foram aplicadas corretamente
 
+
+
+
+
+
+
+
+--  ********************************************************************************
 -- Transações
 create table conta (
 	idconta serial not null,
